@@ -2,8 +2,9 @@
 #define BEING_H_
 
 struct being {
-  char* name;
-  char* description;
+  char *name;
+  char *description;
+  char *dialog;
   int x;
   int y;
   int old_x;
@@ -12,7 +13,7 @@ struct being {
   int color_pair;
 };
 
-struct being create_being(char *name, char *description, char character, int x,
-			  int y, int color_pair); 
+struct being create_being(char *name, char *description, char *dialog,
+			  char character, int x, int y, int color_pair); 
 
 #endif

@@ -1,10 +1,11 @@
 #include "being.h"
 
-struct being create_being(char *name, char *description, char character, int x,
-			  int y, int color_pair) {
+struct being create_being(char *name, char *description, char *dialog,
+			  char character, int x, int y, int color_pair) {
   struct being being;
   being.name = name;
   being.description = description;
+  being.dialog = dialog;
   being.character = character;
   being.x = x;
   being.y = y;
