@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <string.h>
 #include "tilemap.h"
 #include "being.h"
 #include "colorpairs.h"
@@ -30,10 +31,17 @@ void display_beings() {
   }
 }
 
-void display_dialog(char *dialog) {
+void display_dialog(struct being being) {
+  char dialog_string[240];
+  strcpy(dialog_string, being.name);
+  strcat(dialog_string, ": ");
+  strcat(dialog_string, being.dialog);
   attron(COLOR_PAIR(WHITE_ON_BLACK));
-  mvprintw(21, 0, dialog);
+  mvprintw(21, 0, dialog_string);
   attroff(COLOR_PAIR(WHITE_ON_BLACK));
+  getch();
+  move(21, 0);
+  clrtobot();
 }
 
 void move_being(struct being *being, int delta_x, int delta_y) {
@@ -46,7 +54,7 @@ void move_being(struct being *being, int delta_x, int delta_y) {
     if (being != &beings[i] && beings[i].x == new_x && beings[i].y == new_y) {
       if (being == &player) {
         //if (beings[i].dialog != "") {
-          display_dialog(beings[i].dialog);
+          display_dialog(beings[i]);
 	  //}
       }
       return;
