@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ncurses.h>
 #include "tilemap.h"
 #include "colorpairs.h"
 
@@ -38,6 +39,11 @@ struct tile create_wall_tile(int x, int y) {
 		     y, UNWALKABLE, '#', WHITE_ON_WHITE);
 }
 
+struct tile create_soul_tree_tile(int x, int y) {
+  return create_tile("Soul Tree", "The Soul Tree is fucking huge!", x, y,
+		     UNWALKABLE, '#', GREEN_ON_YELLOW);
+}
+
 struct tilemap create_tilemap(char *map_location) {
   FILE *map_file;
   char char_buffer;
@@ -57,6 +63,8 @@ struct tilemap create_tilemap(char *map_location) {
       tilemap.matrix[y][x] = create_bridge_tile(x, y);
     } else if (char_buffer == '#') {
       tilemap.matrix[y][x] = create_wall_tile(x, y);
+    } else if (char_buffer == 'T') {
+      tilemap.matrix[y][x] = create_soul_tree_tile(x, y);
     }
 
     x++;

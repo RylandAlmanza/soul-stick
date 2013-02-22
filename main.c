@@ -9,6 +9,8 @@ static const NUMBER_OF_BEINGS = 1;
 struct tilemap tilemap;
 struct being player;
 struct being beings[1];
+char *areas[2][2];
+int area_x, area_y;
 
 void display_tilemap() {
   int x, y;
@@ -42,6 +44,31 @@ void display_dialog(struct being being) {
   getch();
   move(21, 0);
   clrtobot();
+}
+
+void load_area(int delta_x, int delta_y) {
+  tilemap = create_tilemap(areas[area_y + delta_y][area_x + delta_x]);
+
+  display_tilemap();
+
+  area_x += delta_x;
+  area_y += delta_y;
+
+  if (delta_x == 1) {
+    player.x = 0;
+  } else if (delta_x == -1) {
+    player.x = 49;
+  }
+
+  if (delta_y == 1) {
+    player.y = 0;
+  } else if (delta_y == -1) {
+    player.y = 14;
+  }
+
+  attron(COLOR_PAIR(player.color_pair));
+  mvaddch(player.y, player.x, player.character);
+  attroff(COLOR_PAIR(player.color_pair));
 }
 
 void move_being(struct being *being, int delta_x, int delta_y) {
@@ -86,19 +113,31 @@ int main() {
   start_color();
   init_pair(YELLOW_ON_BLACK, COLOR_YELLOW, COLOR_BLACK);
   init_pair(WHITE_ON_BLACK, COLOR_WHITE, COLOR_BLACK);
+  init_pair(GREEN_ON_RED, COLOR_GREEN, COLOR_RED);
+  init_pair(YELLOW_ON_RED, COLOR_YELLOW, COLOR_RED);
+  init_pair(RED_ON_GREEN, COLOR_RED, COLOR_GREEN);
+  init_pair(YELLOW_ON_GREEN, COLOR_YELLOW, COLOR_GREEN);
   init_pair(WHITE_ON_GREEN, COLOR_WHITE, COLOR_GREEN);
   init_pair(BLACK_ON_YELLOW, COLOR_BLACK, COLOR_YELLOW);
+  init_pair(RED_ON_YELLOW, COLOR_RED, COLOR_YELLOW);
+  init_pair(GREEN_ON_YELLOW, COLOR_GREEN, COLOR_YELLOW);
   init_pair(WHITE_ON_BLUE, COLOR_WHITE, COLOR_BLUE);
   init_pair(WHITE_ON_WHITE, COLOR_WHITE, COLOR_WHITE);
 
-  tilemap = create_tilemap("map.txt");
+  areas[0][0] = "startmap.txt";
+  areas[0][1] = "soultreemap.txt";
+
+  area_x = 0;
+  area_y = 0;
+
+  tilemap = create_tilemap("startmap.txt");
 
   display_tilemap();
 
   player = create_being("Sapphire", "That's you, dummy.", "", '@', 1,
 			1, WHITE_ON_BLACK);
 
-  beings[0] = create_being("Wise Man",
+  /*beings[0] = create_being("Wise Man",
 			  "Over the years, this man has collected all of the "
                           "wisdom.\n",
 			  "Talk to The Soul Tree to the east. It is your "
@@ -106,16 +145,27 @@ int main() {
 			  '@',
 			  20,
 			  3,
-			  YELLOW_ON_BLACK);
+			  YELLOW_ON_BLACK);*/
   
   attron(COLOR_PAIR(player.color_pair));
   mvaddch(player.y, player.x, player.character);
   attroff(COLOR_PAIR(player.color_pair));
 
-  display_beings();
+  //display_beings();
 
   int ch;
   while (ch != 113) {
+    if (player.x == 49) {
+      load_area(1, 0);
+    } else if (player.x == 0) {
+      load_area(-1, 0);
+    }
+
+    if (player.y == 14) {
+      load_area(0, 1);
+    } else if (player.y == 0) {
+      load_area(0, -1);
+    }
     ch = getch();
     int delta_x = 0;
     int delta_y = 0;
